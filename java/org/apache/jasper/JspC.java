@@ -63,6 +63,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.util.FileUtils;
 import org.xml.sax.SAXException;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Shell for the jspc compiler.  Handles all options associated with the
@@ -1349,6 +1350,8 @@ public class JspC extends Task implements Options {
      */
     @Override
     public void execute() {
+ThreadFactory threadFactory = Thread.ofVirtual().factory();
+
         if(log.isDebugEnabled()) {
             log.debug("execute() starting for " + pages.size() + " pages.");
         }
@@ -1421,7 +1424,7 @@ public class JspC extends Task implements Options {
             int errorCount = 0;
             long start = System.currentTimeMillis();
 
-            ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
+            ExecutorService threadPool = Executors.newThreadPerTaskExecutor(threadFactory);
             ExecutorCompletionService<Void> service = new ExecutorCompletionService<>(threadPool);
             try {
                 int pageCount = pages.size();
@@ -1488,11 +1491,12 @@ public class JspC extends Task implements Options {
                 LogFactory.release(loader);
             }
         }
-    }
+    
 
-    // ==================== protected utility methods ====================
+    // ==================== protected utility methods ====================}
 
-    protected String nextArg() {
+    
+protected String nextArg() {
         if ((argPos >= args.length)
             || (fullstop = SWITCH_FULL_STOP.equals(args[argPos]))) {
             return null;

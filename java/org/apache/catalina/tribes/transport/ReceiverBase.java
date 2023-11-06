@@ -594,7 +594,7 @@ public abstract class ReceiverBase implements ChannelReceiver, ListenCallback, R
 
         @Override
         public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement());
+            Thread t  = Thread.ofVirtual().name(namePrefix + threadNumber.getAndIncrement()).unstarted(r);
             t.setDaemon(daemon);
             t.setPriority(Thread.NORM_PRIORITY);
             return t;

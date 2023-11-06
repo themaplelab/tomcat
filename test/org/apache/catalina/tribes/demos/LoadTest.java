@@ -350,7 +350,7 @@ public class LoadTest implements MembershipListener, ChannelListener, Runnable {
         channel.start(startoptions);
         Runtime.getRuntime().addShutdownHook(new Shutdown(channel));
         while (threads > 1) {
-            Thread t = new Thread(test);
+            Thread t  = Thread.ofVirtual().unstarted(test);
             t.setDaemon(true);
             t.start();
             threads--;

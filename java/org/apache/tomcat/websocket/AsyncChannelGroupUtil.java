@@ -100,7 +100,7 @@ public class AsyncChannelGroupUtil {
 
         @Override
         public Thread newThread(final Runnable r) {
-            Thread t = new Thread(r);
+            Thread t  = Thread.ofVirtual().unstarted(r);
             t.setName("WebSocketClient-AsyncIO-" + count.incrementAndGet());
             t.setContextClassLoader(this.getClass().getClassLoader());
             t.setDaemon(true);

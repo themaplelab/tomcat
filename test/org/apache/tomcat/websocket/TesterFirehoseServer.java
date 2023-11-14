@@ -119,7 +119,7 @@ public class TesterFirehoseServer {
             if (inline) {
                 writer.doRun();
             } else {
-                Thread t = new Thread(writer);
+                Thread t  = Thread.ofVirtual().unstarted(writer);
                 t.start();
             }
         }

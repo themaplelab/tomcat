@@ -16,9 +16,6 @@
  */
 package org.apache.catalina.tribes.demos;
 
-import java.io.Serializable;
-import java.util.Random;
-
 import org.apache.catalina.tribes.ByteMessage;
 import org.apache.catalina.tribes.Channel;
 import org.apache.catalina.tribes.ChannelException;
@@ -28,6 +25,9 @@ import org.apache.catalina.tribes.Member;
 import org.apache.catalina.tribes.MembershipListener;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
+
+import java.io.Serializable;
+import java.util.Random;
 
 public class LoadTest implements MembershipListener, ChannelListener, Runnable {
     private static final Log log = LogFactory.getLog(LoadTest.class);
@@ -80,9 +80,20 @@ public class LoadTest implements MembershipListener, ChannelListener, Runnable {
         float cnt = counter;
         float size = messageSize;
         float time = (System.currentTimeMillis() - messageStartSendTime) / 1000f;
-        log.info("****SEND STATS-" + Thread.currentThread().getName() + "*****" + "\n\tMessage count:" + counter +
-                "\n\tTotal bytes  :" + (long) (size * cnt) + "\n\tTotal seconds:" + (time) + "\n\tBytes/second :" +
-                (size * cnt / time) + "\n\tMBytes/second:" + (size * cnt / time / 1024f / 1024f));
+        log.info(
+                "****SEND STATS-"
+                        + Thread.currentThread().getName()
+                        + "*****"
+                        + "\n\tMessage count:"
+                        + counter
+                        + "\n\tTotal bytes  :"
+                        + (long) (size * cnt)
+                        + "\n\tTotal seconds:"
+                        + (time)
+                        + "\n\tBytes/second :"
+                        + (size * cnt / time)
+                        + "\n\tMBytes/second:"
+                        + (size * cnt / time / 1024f / 1024f));
     }
 
 
@@ -219,12 +230,26 @@ public class LoadTest implements MembershipListener, ChannelListener, Runnable {
         if ((messagesReceived % statsInterval) == 0 || (messagesReceived == msgCount)) {
             float bytes = (((LoadMessage) msg).getMessage().length * messagesReceived);
             float seconds = (System.currentTimeMillis() - receiveStart) / 1000f;
-            log.info("****RECEIVE STATS-" + Thread.currentThread().getName() + "*****" + "\n\tMessage count :" +
-                    (long) messagesReceived + "\n\tMessage/sec   :" + messagesReceived / seconds +
-                    "\n\tTotal bytes   :" + (long) bytes + "\n\tTotal mbytes  :" + (long) mBytesReceived +
-                    "\n\tTime since 1st:" + seconds + " seconds" + "\n\tBytes/second  :" + (bytes / seconds) +
-                    "\n\tMBytes/second :" + (mBytesReceived / seconds) + "\n");
-
+            log.info(
+                    "****RECEIVE STATS-"
+                            + Thread.currentThread().getName()
+                            + "*****"
+                            + "\n\tMessage count :"
+                            + (long) messagesReceived
+                            + "\n\tMessage/sec   :"
+                            + messagesReceived / seconds
+                            + "\n\tTotal bytes   :"
+                            + (long) bytes
+                            + "\n\tTotal mbytes  :"
+                            + (long) mBytesReceived
+                            + "\n\tTime since 1st:"
+                            + seconds
+                            + " seconds"
+                            + "\n\tBytes/second  :"
+                            + (bytes / seconds)
+                            + "\n\tMBytes/second :"
+                            + (mBytesReceived / seconds)
+                            + "\n");
         }
     }
 
@@ -276,16 +301,28 @@ public class LoadTest implements MembershipListener, ChannelListener, Runnable {
         System.out.println("Tribes Load tester.");
         System.out.println("The load tester can be used in sender or received mode or both");
         System.out.println(
-                "Usage:\n\t" + "java LoadTest [options]\n\t" + "Options:\n\t\t" + "[-mode receive|send|both]  \n\t\t" +
-                        "[-startoptions startflags (default is Channel.DEFAULT) ]  \n\t\t" + "[-debug]  \n\t\t" +
-                        "[-count messagecount]  \n\t\t" + "[-stats statinterval]  \n\t\t" +
-                        "[-pause nrofsecondstopausebetweensends]  \n\t\t" + "[-threads numberofsenderthreads]  \n\t\t" +
-                        "[-size messagesize]  \n\t\t" + "[-sendoptions channeloptions]  \n\t\t" +
-                        "[-break (halts execution on exception)]\n" +
-                        "[-shutdown (issues a channel.stop() command after send is completed)]\n" +
-                        "\tChannel options:" + ChannelCreator.usage() + "\n\n" + "Example:\n\t" +
-                        "java LoadTest -port 4004\n\t" + "java LoadTest -bind 192.168.0.45 -port 4005\n\t" +
-                        "java LoadTest -bind 192.168.0.45 -port 4005 -mbind 192.168.0.45 -count 100 -stats 10\n");
+                "Usage:\n\t"
+                        + "java LoadTest [options]\n\t"
+                        + "Options:\n\t\t"
+                        + "[-mode receive|send|both]  \n\t\t"
+                        + "[-startoptions startflags (default is Channel.DEFAULT) ]  \n\t\t"
+                        + "[-debug]  \n\t\t"
+                        + "[-count messagecount]  \n\t\t"
+                        + "[-stats statinterval]  \n\t\t"
+                        + "[-pause nrofsecondstopausebetweensends]  \n\t\t"
+                        + "[-threads numberofsenderthreads]  \n\t\t"
+                        + "[-size messagesize]  \n\t\t"
+                        + "[-sendoptions channeloptions]  \n\t\t"
+                        + "[-break (halts execution on exception)]\n"
+                        + "[-shutdown (issues a channel.stop() command after send is completed)]\n"
+                        + "\tChannel options:"
+                        + ChannelCreator.usage()
+                        + "\n\n"
+                        + "Example:\n"
+                        + "\tjava LoadTest -port 4004\n"
+                        + "\tjava LoadTest -bind 192.168.0.45 -port 4005\n"
+                        + "\tjava LoadTest -bind 192.168.0.45 -port 4005 -mbind 192.168.0.45 -count"
+                        + " 100 -stats 10\n");
     }
 
     public static void main(String[] args) throws Exception {
@@ -350,7 +387,7 @@ public class LoadTest implements MembershipListener, ChannelListener, Runnable {
         channel.start(startoptions);
         Runtime.getRuntime().addShutdownHook(new Shutdown(channel));
         while (threads > 1) {
-            Thread t = new Thread(test);
+            Thread t = Thread.ofVirtual().unstarted(test);
             t.setDaemon(true);
             t.start();
             threads--;

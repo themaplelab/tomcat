@@ -16,6 +16,15 @@
  */
 package org.apache.catalina.tribes.transport.nio;
 
+import org.apache.catalina.tribes.io.ObjectReader;
+import org.apache.catalina.tribes.transport.AbstractRxTask;
+import org.apache.catalina.tribes.transport.ReceiverBase;
+import org.apache.catalina.tribes.transport.RxTaskPool;
+import org.apache.catalina.tribes.util.ExceptionUtils;
+import org.apache.catalina.tribes.util.StringManager;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.channels.CancelledKeyException;
@@ -31,15 +40,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.catalina.tribes.io.ObjectReader;
-import org.apache.catalina.tribes.transport.AbstractRxTask;
-import org.apache.catalina.tribes.transport.ReceiverBase;
-import org.apache.catalina.tribes.transport.RxTaskPool;
-import org.apache.catalina.tribes.util.ExceptionUtils;
-import org.apache.catalina.tribes.util.StringManager;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 
 public class NioReceiver extends ReceiverBase implements Runnable, NioReceiverMBean {
 
@@ -94,7 +94,7 @@ public class NioReceiver extends ReceiverBase implements Runnable, NioReceiverMB
             if (getChannel().getName() != null) {
                 channelName = "[" + getChannel().getName() + "]";
             }
-            Thread t = new Thread(this, "NioReceiver" + channelName);
+            Thread t = Thread.ofVirtual().name("NioReceiver" + channelName).unstarted(this);
             t.setDaemon(true);
             t.start();
         } catch (Exception x) {

@@ -16,6 +16,11 @@
  */
 package org.apache.tomcat.jdbc.test;
 
+import org.apache.tomcat.jdbc.test.driver.Connection;
+import org.apache.tomcat.jdbc.test.driver.Driver;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -23,14 +28,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 import javax.sql.PooledConnection;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import org.apache.tomcat.jdbc.test.driver.Connection;
-import org.apache.tomcat.jdbc.test.driver.Driver;
 
 public class AlternateUsernameTest extends DefaultTestCase {
 
@@ -42,6 +42,8 @@ public class AlternateUsernameTest extends DefaultTestCase {
     }
 
     private void testUsername(boolean allowUsernameChange) throws Exception {
+        ThreadFactory threadFactory = Thread.ofVirtual().factory();
+
         long start = System.currentTimeMillis();
         int withoutuser =10;
         int withuser = withoutuser;
@@ -53,12 +55,17 @@ public class AlternateUsernameTest extends DefaultTestCase {
 
         TestRunner[] runners = new TestRunner[withuser+withoutuser];
         for (int i=0; i<withuser; i++) {
-            TestRunner with = new TestRunner("foo","bar",datasource.getPoolProperties().getUsername(),datasource.getPoolProperties().getPassword());
+            TestRunner with =
+                    new TestRunner(
+                            "foo",
+                            "bar",
+                            datasource.getPoolProperties().getUsername(),
+                            datasource.getPoolProperties().getPassword());
             TestRunner without = new TestRunner(null,null,datasource.getPoolProperties().getUsername(),datasource.getPoolProperties().getPassword());
             runners[i] = allowUsernameChange?with:without;
             runners[i+withuser] = without;
         }
-        ExecutorService svc = Executors.newFixedThreadPool(withuser+withoutuser);
+        ExecutorService svc = Executors.newThreadPerTaskExecutor(threadFactory);
         List<Future<TestResult>> results =  svc.invokeAll(Arrays.asList(runners));
         int failures = 0;
         int total = 0;
@@ -74,8 +81,7 @@ public class AlternateUsernameTest extends DefaultTestCase {
         this.datasource.close();
         System.out.println("Nr of connect() calls:"+Driver.connectCount.get());
         System.out.println("Nr of disconnect() calls:"+Driver.disconnectCount.get());
-        System.out.println("Nr of iterations:"+total+" over "+(stop-start)+ " ms.");
-
+        System.out.println("Nr of iterations:" + total + " over " + (stop - start) + " ms.");
     }
 
     @Test
@@ -121,8 +127,18 @@ public class AlternateUsernameTest extends DefaultTestCase {
 
                     Connection con = (Connection)pcon.getConnection();
 
-                    Assert.assertTrue("Username mismatch: Requested User:"+username+" Actual user:"+con.getUsername(), con.getUsername().equals(username));
-                    Assert.assertTrue("Password mismatch: Requested Password:"+password+" Actual password:"+con.getPassword(), con.getPassword().equals(password));
+                    Assert.assertTrue(
+                            "Username mismatch: Requested User:"
+                                    + username
+                                    + " Actual user:"
+                                    + con.getUsername(),
+                            con.getUsername().equals(username));
+                    Assert.assertTrue(
+                            "Password mismatch: Requested Password:"
+                                    + password
+                                    + " Actual password:"
+                                    + con.getPassword(),
+                            con.getPassword().equals(password));
                 }catch (SQLException x) {
                     test.failures++;
                     test.lastMessage = x.getMessage();

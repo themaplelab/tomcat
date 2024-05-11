@@ -16,9 +16,6 @@
  */
 package org.apache.tomcat.websocket;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
@@ -30,6 +27,9 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.apache.tomcat.websocket.server.TesterEndpointConfig;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Sends {@link #MESSAGE_COUNT} messages of size {@link #MESSAGE_SIZE} bytes as quickly as possible after the client
@@ -119,7 +119,7 @@ public class TesterFirehoseServer {
             if (inline) {
                 writer.doRun();
             } else {
-                Thread t = new Thread(writer);
+                Thread t = Thread.ofVirtual().unstarted(writer);
                 t.start();
             }
         }

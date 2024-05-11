@@ -16,6 +16,8 @@
  */
 package org.apache.tomcat.util.net.openssl.ciphers;
 
+import org.apache.catalina.util.IOTools;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.catalina.util.IOTools;
 
 public class TesterOpenSSL {
 
@@ -331,7 +331,13 @@ public class TesterOpenSSL {
             // Explicit OpenSSL path may also need explicit lib path
             // (e.g. Gump needs this)
             openSSLLibPath = openSSLPath.substring(0, openSSLPath.lastIndexOf('/'));
-            openSSLLibPath = openSSLLibPath + "/../:" + openSSLLibPath + "/../lib:" + openSSLLibPath + "/../lib64";
+            openSSLLibPath =
+                    openSSLLibPath
+                            + "/../:"
+                            + openSSLLibPath
+                            + "/../lib:"
+                            + openSSLLibPath
+                            + "/../lib64";
         }
         List<String> cmd = new ArrayList<>();
         cmd.add(openSSLPath);
@@ -355,11 +361,11 @@ public class TesterOpenSSL {
         InputStreamToText stdout = new InputStreamToText(p.getInputStream());
         InputStreamToText stderr = new InputStreamToText(p.getErrorStream());
 
-        Thread t1 = new Thread(stdout);
+        Thread t1 = Thread.ofVirtual().unstarted(stdout);
         t1.setName("OpenSSL stdout reader");
         t1.start();
 
-        Thread t2 = new Thread(stderr);
+        Thread t2 = Thread.ofVirtual().unstarted(stderr);
         t2.setName("OpenSSL stderr reader");
         t2.start();
 

@@ -16,6 +16,17 @@
  */
 package org.apache.catalina.tribes.transport;
 
+import org.apache.catalina.tribes.Channel;
+import org.apache.catalina.tribes.ChannelMessage;
+import org.apache.catalina.tribes.ChannelReceiver;
+import org.apache.catalina.tribes.MessageListener;
+import org.apache.catalina.tribes.io.ListenCallback;
+import org.apache.catalina.tribes.jmx.JmxRegistry;
+import org.apache.catalina.tribes.util.ExecutorFactory;
+import org.apache.catalina.tribes.util.StringManager;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
+
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -28,17 +39,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.management.ObjectName;
-
-import org.apache.catalina.tribes.Channel;
-import org.apache.catalina.tribes.ChannelMessage;
-import org.apache.catalina.tribes.ChannelReceiver;
-import org.apache.catalina.tribes.MessageListener;
-import org.apache.catalina.tribes.io.ListenCallback;
-import org.apache.catalina.tribes.jmx.JmxRegistry;
-import org.apache.catalina.tribes.util.ExecutorFactory;
-import org.apache.catalina.tribes.util.StringManager;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 
 public abstract class ReceiverBase implements ChannelReceiver, ListenCallback, RxTaskPool.TaskCreator {
 
@@ -102,7 +102,8 @@ public abstract class ReceiverBase implements ChannelReceiver, ListenCallback, R
             if (channel.getName() != null) {
                 channelName = "[" + channel.getName() + "]";
             }
-            TaskThreadFactory tf = new TaskThreadFactory("Tribes-Task-Receiver" + channelName + "-");
+            TaskThreadFactory tf =
+                    new TaskThreadFactory("Tribes-Task-Receiver" + channelName + "-");
             executor = ExecutorFactory.newThreadPool(minThreads, maxThreads, maxIdleTime, TimeUnit.MILLISECONDS, tf);
         }
         // register jmx
@@ -594,7 +595,10 @@ public abstract class ReceiverBase implements ChannelReceiver, ListenCallback, R
 
         @Override
         public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement());
+            Thread t =
+                    Thread.ofVirtual()
+                            .name(namePrefix + threadNumber.getAndIncrement())
+                            .unstarted(r);
             t.setDaemon(daemon);
             t.setPriority(Thread.NORM_PRIORITY);
             return t;

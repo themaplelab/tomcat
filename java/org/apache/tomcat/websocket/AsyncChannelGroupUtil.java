@@ -16,6 +16,9 @@
  */
 package org.apache.tomcat.websocket;
 
+import org.apache.tomcat.util.res.StringManager;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
+
 import java.io.IOException;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.util.concurrent.ExecutorService;
@@ -23,9 +26,6 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.tomcat.util.res.StringManager;
-import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 
 /**
  * This is a utility class that enables multiple {@link WsWebSocketContainer} instances to share a single
@@ -100,7 +100,7 @@ public class AsyncChannelGroupUtil {
 
         @Override
         public Thread newThread(final Runnable r) {
-            Thread t = new Thread(r);
+            Thread t = Thread.ofVirtual().unstarted(r);
             t.setName("WebSocketClient-AsyncIO-" + count.incrementAndGet());
             t.setContextClassLoader(this.getClass().getClassLoader());
             t.setDaemon(true);

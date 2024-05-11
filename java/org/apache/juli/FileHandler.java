@@ -244,7 +244,11 @@ public class FileHandler extends Handler {
                         writer.flush();
                     }
                 } else {
-                    reportError("FileHandler is closed or not yet initialized, unable to log [" + result + "]", null,
+                    reportError(
+                            "FileHandler is closed or not yet initialized, unable to log ["
+                                    + result
+                                    + "]",
+                            null,
                             ErrorManager.WRITE_FAILURE);
                 }
             } catch (Exception e) {
@@ -339,8 +343,13 @@ public class FileHandler extends Handler {
             suffix = suffix.substring(1);
         }
 
-        pattern = Pattern
-                .compile("^(" + Pattern.quote(prefix) + ")\\d{4}-\\d{1,2}-\\d{1,2}(" + Pattern.quote(suffix) + ")$");
+        pattern =
+                Pattern.compile(
+                        "^("
+                                + Pattern.quote(prefix)
+                                + ")\\d{4}-\\d{1,2}-\\d{1,2}("
+                                + Pattern.quote(suffix)
+                                + ")$");
 
         if (maxDays == null) {
             String sMaxDays = getProperty(className + ".maxDays", String.valueOf(DEFAULT_MAX_DAYS));
@@ -352,7 +361,8 @@ public class FileHandler extends Handler {
         }
 
         if (bufferSize == null) {
-            String sBufferSize = getProperty(className + ".bufferSize", String.valueOf(DEFAULT_BUFFER_SIZE));
+            String sBufferSize =
+                    getProperty(className + ".bufferSize", String.valueOf(DEFAULT_BUFFER_SIZE));
             try {
                 bufferSize = Integer.valueOf(sBufferSize);
             } catch (NumberFormatException ignore) {
@@ -434,7 +444,10 @@ public class FileHandler extends Handler {
         FileOutputStream fos = null;
         OutputStream os = null;
         try {
-            File pathname = new File(dir.getAbsoluteFile(), prefix + (rotatable.booleanValue() ? date : "") + suffix);
+            File pathname =
+                    new File(
+                            dir.getAbsoluteFile(),
+                            prefix + (rotatable.booleanValue() ? date : "") + suffix);
             File parent = pathname.getParentFile();
             if (!parent.mkdirs() && !parent.isDirectory()) {
                 reportError("Unable to create [" + parent + "]", null, ErrorManager.OPEN_FAILURE);
@@ -532,7 +545,10 @@ public class FileHandler extends Handler {
 
         @Override
         public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement());
+            Thread t =
+                    Thread.ofVirtual()
+                            .name(namePrefix + threadNumber.getAndIncrement())
+                            .unstarted(r);
             // Threads should not have as context classloader a webapp classloader
             t.setContextClassLoader(ThreadFactory.class.getClassLoader());
             t.setDaemon(true);

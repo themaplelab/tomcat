@@ -16,19 +16,8 @@
  */
 package jakarta.servlet.http;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
@@ -36,6 +25,16 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.startup.TomcatBaseTest;
 import org.apache.tomcat.util.buf.ByteChunk;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * These tests evolved out of a discussion in the Jakarta Servlet project
@@ -78,8 +77,8 @@ public class TestHttpServletResponseSendError extends TomcatBaseTest {
          */
     }
 
-
-    @Parameterized.Parameters(name = "{index}: async[{0}], throw[{1}], dispatch[{2}], errorPoint[{3}], useStart[{4}]")
+    @Parameterized.Parameters(
+            name = "{index}: async[{0}], throw[{1}], dispatch[{2}], errorPoint[{3}], useStart[{4}]")
     public static Collection<Object[]> parameters() {
         List<Object[]> parameterSets = new ArrayList<>();
 
@@ -240,7 +239,7 @@ public class TestHttpServletResponseSendError extends TomcatBaseTest {
             if (useStart) {
                 ac.start(r);
             } else {
-                Thread t = new Thread(r);
+                Thread t = Thread.ofVirtual().unstarted(r);
                 t.start();
             }
 

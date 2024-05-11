@@ -58,13 +58,13 @@ public class TesterMulticast {
     public static void main(String[] args) throws Exception {
         // Start Rx Thread
         Rx rx = new Rx();
-        Thread rxThread = new Thread(rx);
+        Thread rxThread  = Thread.ofVirtual().unstarted(rx);
         rxThread.setDaemon(true);
         rxThread.start();
 
         // Start Tx Thread
         Tx tx = new Tx();
-        Thread txThread = new Thread(tx);
+        Thread txThread  = Thread.ofVirtual().unstarted(tx);
         txThread.setDaemon(true);
         txThread.start();
 

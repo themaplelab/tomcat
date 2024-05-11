@@ -31,7 +31,7 @@ public class Stockticker implements Runnable {
 
         public synchronized void start() {
             run = true;
-            ticker = new Thread(this);
+            ticker = Thread.ofVirtual().unstarted(this);
             ticker.setName("Ticker Thread");
             ticker.start();
         }

@@ -298,7 +298,7 @@ public class TestHttp11Processor extends TomcatBaseTest {
                 }
             }
         };
-        Thread t = new Thread(send);
+        Thread t  = Thread.ofVirtual().unstarted(send);
         t.start();
 
         // Sleep for 1500 ms which should mean the all of request 1 has been

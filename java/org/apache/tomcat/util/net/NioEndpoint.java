@@ -285,7 +285,7 @@ public class NioEndpoint extends AbstractNetworkChannelEndpoint<NioChannel,Socke
 
             // Start poller thread
             poller = new Poller();
-            Thread pollerThread = new Thread(poller, getName() + "-Poller");
+            Thread pollerThread  = Thread.ofVirtual().name(getName() + "-Poller").unstarted(poller);
             pollerThread.setPriority(threadPriority);
             pollerThread.setDaemon(true);
             pollerThread.start();

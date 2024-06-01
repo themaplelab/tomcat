@@ -131,7 +131,7 @@ public class TestOrderInterceptor {
         };
         Thread[] threads = new Thread[5];
         for (int i=0;i<threads.length;i++) {
-            threads[i] = new Thread(run);
+            threads[i] = Thread.ofVirtual().unstarted(run);
         }
         for (Thread thread : threads) {
             thread.start();

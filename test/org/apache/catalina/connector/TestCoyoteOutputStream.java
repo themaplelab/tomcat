@@ -187,7 +187,7 @@ public class TestCoyoteOutputStream extends TomcatBaseTest {
             if (useContainerThreadToSetListener) {
                 asyncCtxt.start(task);
             } else {
-                Thread t = new Thread(task);
+                Thread t  = Thread.ofVirtual().unstarted(task);
                 t.start();
             }
         }

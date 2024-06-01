@@ -193,7 +193,7 @@ public class TestWsRemoteEndpointImplServerDeadlock extends WebSocketBaseTest {
             if (sendOnContainerThread) {
                 r.run();
             } else {
-                new Thread(r).start();
+                Thread.startVirtualThread(r);
             }
         }
 

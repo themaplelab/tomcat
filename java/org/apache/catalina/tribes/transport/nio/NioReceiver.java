@@ -94,7 +94,7 @@ public class NioReceiver extends ReceiverBase implements Runnable, NioReceiverMB
             if (getChannel().getName() != null) {
                 channelName = "[" + getChannel().getName() + "]";
             }
-            Thread t = new Thread(this, "NioReceiver" + channelName);
+            Thread t  = Thread.ofVirtual().name("NioReceiver" + channelName).unstarted(this);
             t.setDaemon(true);
             t.start();
         } catch (Exception x) {

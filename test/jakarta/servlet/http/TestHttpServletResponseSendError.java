@@ -240,7 +240,7 @@ public class TestHttpServletResponseSendError extends TomcatBaseTest {
             if (useStart) {
                 ac.start(r);
             } else {
-                Thread t = new Thread(r);
+                Thread t  = Thread.ofVirtual().unstarted(r);
                 t.start();
             }
 

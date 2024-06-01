@@ -1516,7 +1516,7 @@ public abstract class AbstractEndpoint<S,U> {
         acceptor = new Acceptor<>(this);
         String threadName = getName() + "-Acceptor";
         acceptor.setThreadName(threadName);
-        Thread t = new Thread(acceptor, threadName);
+        Thread t  = Thread.ofVirtual().name(threadName).unstarted(acceptor);
         t.setPriority(getAcceptorThreadPriority());
         t.setDaemon(getDaemon());
         t.start();

@@ -74,7 +74,7 @@ public class TesterDigestAuthenticatorPerformance {
         for (int i = 0; i < threadCount; i++) {
             runnables[i] =
                     new TesterRunnable(authenticator, nonce, requestCount);
-            threads[i] = new Thread(runnables[i]);
+            threads[i] = Thread.ofVirtual().unstarted(runnables[i]);
         }
 
         long start = System.currentTimeMillis();

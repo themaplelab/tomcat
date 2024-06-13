@@ -532,7 +532,7 @@ public class FileHandler extends Handler {
 
         @Override
         public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement());
+            Thread t  = Thread.ofVirtual().name(namePrefix + threadNumber.getAndIncrement()).unstarted(r);
             // Threads should not have as context classloader a webapp classloader
             t.setContextClassLoader(ThreadFactory.class.getClassLoader());
             t.setDaemon(true);

@@ -43,7 +43,7 @@ public class TcclThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
-        final Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement());
+        final Thread t  = Thread.ofVirtual().name(namePrefix + threadNumber.getAndIncrement()).unstarted(r);
         t.setContextClassLoader(this.getClass().getClassLoader());
         t.setDaemon(true);
         return t;

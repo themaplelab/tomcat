@@ -93,8 +93,7 @@ public class Benchmarks {
         Thread[] threads = new Thread[threadCount];
 
         for (int i = 0; i < threadCount; i++) {
-            threads[i] = new Thread(
-                    new TestThreadGenerateSessionId(mgr, iterCount));
+            threads[i] = Thread.ofVirtual().unstarted(new TestThreadGenerateSessionId(mgr, iterCount));
         }
 
         long start = System.currentTimeMillis();
@@ -191,8 +190,7 @@ public class Benchmarks {
         Thread[] threads = new Thread[threadCount];
 
         for (int i = 0; i < threadCount; i++) {
-            threads[i] = new Thread(
-                    new TestThreadCreateSession(mgr, iterCount));
+            threads[i] = Thread.ofVirtual().unstarted(new TestThreadCreateSession(mgr, iterCount));
         }
 
         long start = System.currentTimeMillis();
@@ -274,9 +272,9 @@ public class Benchmarks {
 
         for (int i = 0; i < threadCount; i++) {
             if (useSecureRandom) {
-                threads[i] = new Thread(new TestThreadSecureRandom(iterCount));
+                threads[i] = Thread.ofVirtual().unstarted(new TestThreadSecureRandom(iterCount));
             } else {
-                threads[i] = new Thread(new TestThreadDevUrandom(iterCount));
+                threads[i] = Thread.ofVirtual().unstarted(new TestThreadDevUrandom(iterCount));
             }
         }
 

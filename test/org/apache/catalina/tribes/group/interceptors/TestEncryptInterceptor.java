@@ -437,7 +437,7 @@ public class TestEncryptInterceptor {
 
         Thread[] threads = new Thread[numThreads];
         for(int i=0; i<numThreads; ++i) {
-            threads[i] = new Thread(job);
+            threads[i] = Thread.ofVirtual().unstarted(job);
             threads[i].setName("Message-Thread-" + i);
         }
 

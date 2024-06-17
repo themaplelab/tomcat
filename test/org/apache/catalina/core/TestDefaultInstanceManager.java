@@ -122,7 +122,7 @@ public class TestDefaultInstanceManager extends TomcatBaseTest {
         Thread[] threads = new Thread[threadCount];
 
         for (int i = 0; i < threadCount; i++) {
-            threads[i] = new Thread(new InstanceManagerRunnable(im));
+            threads[i] = Thread.ofVirtual().unstarted(new InstanceManagerRunnable(im));
         }
 
         for (int i = 0; i < threadCount; i++) {

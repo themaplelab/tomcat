@@ -53,7 +53,7 @@ class EvictionTimer {
 
         @Override
         public Thread newThread(final Runnable runnable) {
-            final Thread thread = new Thread(null, runnable, "commons-pool-evictor");
+            final Thread thread  = Thread.ofVirtual().name("commons-pool-evictor").unstarted(runnable);
             thread.setDaemon(true); // POOL-363 - Required for applications using Runtime.addShutdownHook().
             thread.setContextClassLoader(EvictorThreadFactory.class.getClassLoader());
             return thread;

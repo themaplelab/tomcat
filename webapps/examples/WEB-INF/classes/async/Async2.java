@@ -58,7 +58,7 @@ public class Async2 extends HttpServlet {
                 }
             }
         };
-        Thread t = new Thread(run);
+        Thread t  = Thread.ofVirtual().unstarted(run);
         t.start();
     }
 
